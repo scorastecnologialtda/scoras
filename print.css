@@ -1,0 +1,33 @@
+/* Custom styles for print */
+@media print {
+  .md-header,
+  .md-tabs,
+  .md-sidebar,
+  .md-footer,
+  .md-top,
+  .md-content__button {
+    display: none !important;
+  }
+  
+  .md-content {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .md-main__inner {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Hide interactive demos in print */
+  .mcp-demo, .a2a-demo {
+    display: none !important;
+  }
+  
+  /* Ensure code blocks don't overflow */
+  pre {
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+  }
+}

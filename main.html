@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  <script src="{{ 'assets/javascripts/demo-loader.js' | url }}"></script>
+{% endblock %}
+
+{% block content %}
+  {{ super() }}
+{% endblock %}

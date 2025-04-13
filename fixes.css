@@ -1,0 +1,95 @@
+/* Ensure proper path resolution for assets */
+:root {
+  --md-primary-fg-color: #3f51b5;
+  --md-primary-fg-color--light: #7986cb;
+  --md-primary-fg-color--dark: #303f9f;
+  --md-accent-fg-color: #ff4081;
+}
+
+/* Improve code block readability */
+.highlight pre {
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+/* Improve table styling */
+.md-typeset table:not([class]) {
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--md-primary-fg-color);
+  color: white;
+}
+
+.md-typeset table:not([class]) tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Improve admonitions */
+.md-typeset .admonition {
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Add Scoras branding to footer */
+.md-footer-meta__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.md-footer-meta__inner::before {
+  content: "Scoras - Simplifying Agent Creation";
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+/* Improve mobile experience */
+@media screen and (max-width: 76.1875em) {
+  .md-nav--primary .md-nav__title {
+    background-color: var(--md-primary-fg-color);
+    color: white;
+  }
+}
+
+/* Fix for interactive demos */
+.mcp-interactive-demo, .a2a-interactive-demo {
+  margin: 2rem 0;
+  min-height: 600px;
+}
+
+/* Ensure images don't overflow */
+.md-typeset img, .md-typeset svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Improve search results */
+.md-search-result__item {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.md-search-result__item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Improve code annotations */
+.md-annotation__index {
+  background-color: var(--md-accent-fg-color);
+}
+
+/* Improve tabs */
+.md-tabs__link {
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.md-tabs__link:hover,
+.md-tabs__link--active {
+  opacity: 1;
+}

@@ -1,4 +1,6 @@
-MIT License
+# License
+
+## MIT License
 
 Copyright (c) 2025 Anderson L. Amaral
 
@@ -19,3 +21,27 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## Summary
+
+Scoras is created by Anderson L. Amaral and is available under the MIT license, which allows anyone to use it for free, forever, in whatever way they want. This includes:
+
+- Using the library in commercial applications
+- Modifying the library
+- Distributing the library
+- Sublicensing the library
+- Private use of the library
+
+The only requirement is that the copyright notice and permission notice must be included in all copies or substantial portions of the Software.
+
+## Why MIT License?
+
+The MIT License was chosen for Scoras because it:
+
+1. Is simple and easy to understand
+2. Provides maximum freedom to users
+3. Allows for commercial use
+4. Has minimal restrictions
+5. Is compatible with many other licenses
+
+This aligns with the philosophy of Scoras to be accessible and useful to as many developers as possible.

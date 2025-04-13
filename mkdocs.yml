@@ -1,0 +1,154 @@
+site_name: Scoras
+site_url: https://scoras.example.com
+site_author: Anderson L. Amaral
+site_description: >-
+  Scoras is a Python library for creating agents, RAG systems, and tools with integrated complexity scoring.
+
+# Repository
+repo_name: scoras/scoras
+repo_url: https://github.com/scoras/scoras
+
+# Copyright
+copyright: Copyright &copy; 2025 Anderson L. Amaral
+
+# Theme configuration
+theme:
+  name: material
+  language: en
+  custom_dir: docs/overrides
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.path
+    - navigation.top
+    - navigation.tracking
+    - navigation.indexes
+    - content.code.copy
+    - content.code.annotate
+    - search.highlight
+    - search.share
+    - search.suggest
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  favicon: assets/favicon.png
+  logo: assets/logo.png
+  icon:
+    repo: fontawesome/brands/github
+
+# Plugins
+plugins:
+  - search
+  - social
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: scoras
+      repo: scoras
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Navigation
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quick-start.md
+    - Basic Concepts: getting-started/basic-concepts.md
+  - Core Features:
+    - Agents: core-features/agents.md
+    - Tools: core-features/tools.md
+    - Workflows: core-features/workflows.md
+    - RAG Systems: core-features/rag.md
+    - Complexity Scoring: core-features/complexity-scoring.md
+  - Protocols:
+    - MCP Protocol: protocols/mcp.md
+    - A2A Protocol: protocols/a2a.md
+  - Examples:
+    - Basic Examples: examples/basic.md
+    - MCP Interactive: examples/mcp-interactive.md
+    - A2A Interactive: examples/a2a-interactive.md
+    - Advanced Examples: examples/advanced.md
+  - API Reference:
+    - Core API: api/core.md
+    - Agents API: api/agents.md
+    - Tools API: api/tools.md
+    - RAG API: api/rag.md
+    - MCP API: api/mcp.md
+    - A2A API: api/a2a.md
+  - About:
+    - License: about/license.md
+    - Contributing: about/contributing.md
+
+# Extra configuration
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/scoras/scoras
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/scoras/
+  generator: false
+
+# Extra CSS
+extra_css:
+  - assets/stylesheets/extra.css
+  - assets/stylesheets/demo.css
+  - assets/stylesheets/fixes.css
+  - assets/stylesheets/print.css
+
+# Extra JavaScript
+extra_javascript:
+  - assets/javascripts/extra.js
+  - assets/javascripts/mcp-demo.js
+  - assets/javascripts/a2a-demo.js
