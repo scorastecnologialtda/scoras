@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="scoras",
-    version="0.2.0",
+    version="0.2.1",
     author="Anderson L. Amaral",
     author_email="info@scorastecnologia.com",
     description="Intelligent Agent Framework with Complexity Scoring",
@@ -28,8 +28,7 @@ setup(
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
     ],
-    package_dir={"": "."},
-    packages=find_packages(where="."),
+    packages=find_packages() ,  # Changed this line - removed where="."
     python_requires=">=3.8",
     install_requires=[
         "pydantic>=2.0.0",
@@ -37,7 +36,7 @@ setup(
         "numpy>=1.20.0",
         "typing-extensions>=4.0.0",
         "asyncio>=3.4.3",
-        "aiohttp>=3.8.0",  # Added missing dependency
+        "aiohttp>=3.8.0",
     ],
     extras_require={
         "dev": [
@@ -50,4 +49,4 @@ setup(
         "openai": ["openai>=1.0.0"],
         "anthropic": ["anthropic>=0.5.0"],
     },
-)
+) 
