@@ -405,18 +405,3 @@ Scoras is created by Anderson L. Amaral and is available under the MIT License. 
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
----
-
-<p align="center">
-  <b>Scoras</b><br>
-  Intelligent Agent Framework with Complexity Scoring<br>
-  <a href="https://github.com/andersonamaral2/scoras">GitHub</a> |
-  <a href="https://pypi.org/project/scoras/">PyPI</a> |
-  <a href="https://github.com/andersonamaral2/scoras/issues">Issues</a>
-</p>
-
-# Scoras
-
-Intelligent Agent Framework with Complexity Scoring
-

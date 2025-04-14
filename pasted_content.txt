@@ -1,0 +1,12 @@
+(base) anderson@anderson-IdeaPad-Gaming-3-15ACH6:~$ cd scoras-github/
+(base) anderson@anderson-IdeaPad-Gaming-3-15ACH6:~/scoras-github$ ls
+a2a-demo.js         advanced_example.py  basic_example.py       core.py              extra.css    installation.md  mcp_example.py      print.css       setup.py           tools.py
+a2a_example.py      advanced.md          basic.md               demo.css             extra.js     LICENSE          mcp-interactive.md  quick-start.md  test_protocols.py  workflows.md
+a2a-interactive.md  agents.md            complexity-scoring.md  demo-loader.js       fixes.css    license.md       mcp.md              rag.md          test_scoras.py
+a2a.md              agents.py            contributing.md        exemplo_avancado.py  index.md     main.html        mcp.py              rag.py          todo.md
+a2a.py              basic-concepts.md    core.md                exemplo_basico.py    __init__.py  mcp-demo.js      mkdocs.yml          README.md       tools.md
+(base) anderson@anderson-IdeaPad-Gaming-3-15ACH6:~/scoras-github$ cd ls
+bash: cd: ls: No such file or directory
+(base) anderson@anderson-IdeaPad-Gaming-3-15ACH6:~/scoras-github$ cd scoras
+bash: cd: scoras: No such file or directory
+(base) anderson@anderson-IdeaPad-Gaming-3-15ACH6:~/scoras-github$ 
