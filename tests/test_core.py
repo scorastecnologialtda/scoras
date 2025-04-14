@@ -2,7 +2,10 @@ import unittest
 import asyncio
 from unittest.mock import patch, MagicMock
 
-from scoras.core import ScoringMixin, ComplexityScore, Node, Edge, Graph, WorkflowExecutor
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from scoras.core import Graph, Node, Edge
 
 class TestScoringMixin(unittest.TestCase):
     """Test the ScoringMixin class."""

@@ -30,6 +30,7 @@ dependencies = [
     "numpy>=1.20.0",
     "typing-extensions>=4.0.0",
     "asyncio>=3.4.3",
+    "aiohttp>=3.8.0",  # Added missing dependency
 ]
 
 [project.urls]
