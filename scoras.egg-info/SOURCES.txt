@@ -1,4 +1,5 @@
 LICENSE
+MANIFEST.in
 README.md
 pyproject.toml
 setup.py
@@ -15,6 +16,8 @@ scoras.egg-info/SOURCES.txt
 scoras.egg-info/dependency_links.txt
 scoras.egg-info/requires.txt
 scoras.egg-info/top_level.txt
+scoras/scoring/__init__.py
+scoras/utils/__init__.py
 tests/test_a2a.py
 tests/test_agents.py
 tests/test_core.py

@@ -2,7 +2,7 @@
 Scoras package initialization.
 """
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 __author__ = "Anderson L. Amaral"
 
 # Import core functionality
