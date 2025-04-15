@@ -2,6 +2,10 @@
 requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+include-package-data = true
+
+
 [project]
 name = "scoras"
 version = "0.2.1"

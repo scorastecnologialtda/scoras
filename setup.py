@@ -1,18 +1,19 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
     name="scoras",
-    version="0.2.2",  # Increment version
+    version="0.2.3",  # Increment version
     author="Anderson L. Amaral",
-    author_email="info@scorastecnologia.com",
+    author_email="luis.anderson.sp@gmail.com",
     description="Intelligent Agent Framework with Complexity Scoring",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/scorastecnologialtda/scoras",
-    packages=find_packages() ,
+    packages=["scoras"],
+    include_package_data=True,  # Add this line
     python_requires=">=3.8",
     install_requires=[
         "pydantic>=2.0.0",
