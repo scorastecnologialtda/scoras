@@ -8,11 +8,11 @@ include-package-data = true
 
 [project]
 name = "scoras"
-version = "0.2.1"
+version = "0.2.3"
 description = "Intelligent Agent Framework with Complexity Scoring"
 readme = "README.md"
 authors = [
-    {name = "Anderson L. Amaral", email = "info@scorastecnologia.com"}
+    {name = "Anderson L. Amaral", email = "luis.anderson.sp@gmail.com"}
 ]
 license = {text = "MIT"}
 classifiers = [
