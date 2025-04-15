@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="scoras",
-    version="0.2.3",  # Increment version
+    version="0.2.3",
     author="Anderson L. Amaral",
     author_email="luis.anderson.sp@gmail.com",
     description="Intelligent Agent Framework with Complexity Scoring",
@@ -13,7 +13,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/scorastecnologialtda/scoras",
     packages=["scoras"],
-    include_package_data=True,  # Add this line
+    include_package_data=True,
     python_requires=">=3.8",
     install_requires=[
         "pydantic>=2.0.0",
