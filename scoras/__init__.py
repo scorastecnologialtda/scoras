@@ -6,7 +6,7 @@ __version__ = "0.2.3"
 __author__ = "Anderson L. Amaral"
 
 # Import core functionality
-from .core import ScoringMixin, Graph, Node, Edge
+from .core import ScoringMixin, Graph, Node, Edge, Agent
 
 # Provide convenience imports
-__all__ = ['ScoringMixin', 'Graph', 'Node', 'Edge']
+__all__ = ['ScoringMixin', 'Graph', 'Node', 'Edge', 'Agent']
