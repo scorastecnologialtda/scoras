@@ -6,10 +6,12 @@ setup.py
 scoras/__init__.py
 scoras/a2a.py
 scoras/agents.py
+scoras/contextual_rag.py
 scoras/core.py
 scoras/mcp.py
 scoras/minimal_test.py
 scoras/rag.py
+scoras/retriever.py
 scoras/tools.py
 scoras.egg-info/PKG-INFO
 scoras.egg-info/SOURCES.txt

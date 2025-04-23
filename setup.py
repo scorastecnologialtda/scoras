@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="scoras",
-    version="0.3.1",  # Updated version
+    version="0.3.2",  # Updated version
     author="Anderson L. Amaral",
     author_email="luis.anderson.sp@gmail.com",
     description="Intelligent Agent Framework with Complexity Scoring",
