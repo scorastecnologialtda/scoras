@@ -1,234 +1,200 @@
 """
-Scoras: Intelligent Agent Framework with Complexity Scoring
+RAG (Retrieval-Augmented Generation) implementation for Scoras.
 
-This module provides RAG (Retrieval-Augmented Generation) functionality for the Scoras framework.
+This module provides classes and functions for implementing RAG systems,
+which combine retrieval of relevant documents with generative models.
 """
 
-from typing import Any, Dict, List, Optional, Union, Callable, TypeVar
-import asyncio
-from pydantic import BaseModel, Field
-import math
+import uuid
+from typing import List, Dict, Any, Optional, Union, Callable
 
-from .core import ScoringMixin, RAG, Agent
+from .core import ScoringMixin
 
-class Document(BaseModel):
-    """Model representing a document for retrieval."""
-    
-    content: str = Field(..., description="Content of the document")
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Metadata associated with the document")
-    embedding: Optional[List[float]] = Field(None, description="Vector embedding of the document")
-    
-    def __str__(self) -> str:
-        """String representation of the document."""
-        return self.content[:100] + "..." if len(self.content) > 100 else self.content
-
-class Retriever(ScoringMixin):
+class Document:
     """
-    Base class for document retrievers.
+    Represents a document in a RAG system.
     
-    Retrievers are responsible for finding relevant documents based on a query.
+    A document is a piece of content that can be retrieved and used to augment
+    the generation process.
     """
     
     def __init__(
         self,
-        documents: List[Document],
+        content: str,
+        metadata: Optional[Dict[str, Any]] = None,
+        id: Optional[str] = None
+    ):
+        """
+        Initialize a document.
+        
+        Args:
+            content: Content of the document
+            metadata: Optional metadata for the document
+            id: Optional unique identifier for the document
+        """
+        self.content = content
+        self.metadata = metadata or {}
+        self.id = id or str(uuid.uuid4())  # Generate a random ID if not provided
+    
+    def __str__(self) -> str:
+        """
+        Get a string representation of the document.
+        
+        Returns:
+            String representation
+        """
+        return f"Document(id={self.id}, content={self.content[:50]}...)"
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Convert the document to a dictionary.
+        
+        Returns:
+            Dictionary representation
+        """
+        return {
+            "id": self.id,
+            "content": self.content,
+            "metadata": self.metadata
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Document":
+        """
+        Create a document from a dictionary.
+        
+        Args:
+            data: Dictionary representation
+            
+        Returns:
+            Document instance
+        """
+        return cls(
+            content=data["content"],
+            metadata=data.get("metadata", {}),
+            id=data.get("id")
+        )
+
+class SimpleRAG(ScoringMixin):
+    """
+    Implements a simple RAG system.
+    
+    This class provides a basic implementation of a RAG system that can be used
+    to retrieve relevant documents and generate responses.
+    """
+    
+    def __init__(
+        self,
+        agent: Any,
+        documents: Optional[List[Document]] = None,
         enable_scoring: bool = True
     ):
         """
-        Initialize a Retriever.
+        Initialize a simple RAG system.
         
         Args:
-            documents: List of documents to retrieve from
+            agent: Agent to use for generation
+            documents: Optional list of documents
             enable_scoring: Whether to track complexity scoring
         """
         super().__init__(enable_scoring=enable_scoring)
-        self.documents = documents
+        self.agent = agent
+        self.documents = documents or []
         
-        # Add complexity score for the retriever
-        self._add_node_score("retriever", inputs=1, outputs=len(documents))
-
-    async def retrieve(self, query: str, top_k: int = 3) -> List[Document]:
-        """
-        Retrieve relevant documents based on a query.
-        
-        Args:
-            query: Query string
-            top_k: Number of documents to retrieve
+        # Add RAG complexity score
+        if self._enable_scoring:
+            self._add_node_score("simple_rag", inputs=1, outputs=1)
+            self._complexity_score.components["rag"] = 1.5  # RAG systems are more complex
+            self._complexity_score.total_score += 1.5
             
-        Returns:
-            List of retrieved documents
-        """
-        raise NotImplementedError("Subclasses must implement retrieve method")
-    
-    def retrieve_sync(self, query: str, top_k: int = 3) -> List[Document]:
-        """
-        Retrieve relevant documents based on a query synchronously.
-        
-        Args:
-            query: Query string
-            top_k: Number of documents to retrieve
+            # Incorporate agent's complexity score
+            if hasattr(agent, "get_complexity_score"):
+                agent_score = agent.get_complexity_score()
+                if isinstance(agent_score, dict) and "total_score" in agent_score:
+                    self._complexity_score.total_score += agent_score["total_score"] * 0.5
+                    self._complexity_score.components["agent"] = agent_score["total_score"] * 0.5
             
-        Returns:
-            List of retrieved documents
-        """
-        # Create an event loop if there isn't one
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        
-        # Run the async method in the event loop
-        return loop.run_until_complete(self.retrieve(query, top_k))
-
-class SimpleRetriever(Retriever):
-    """
-    A simple retriever that uses keyword matching.
+            self._complexity_score.update()
     
-    This retriever finds documents that contain the query keywords.
-    """
-    
-    async def retrieve(self, query: str, top_k: int = 3) -> List[Document]:
+    def add_document(self, document: Document) -> None:
         """
-        Retrieve relevant documents based on keyword matching.
+        Add a document to the RAG system.
         
         Args:
-            query: Query string
-            top_k: Number of documents to retrieve
-            
-        Returns:
-            List of retrieved documents
+            document: Document to add
         """
-        # Simple keyword matching
-        query_terms = query.lower().split()
+        self.documents.append(document)
         
-        # Score each document based on term frequency
-        scored_docs = []
-        for doc in self.documents:
-            content = doc.content.lower()
-            score = sum(content.count(term) for term in query_terms)
-            scored_docs.append((doc, score))
-        
-        # Sort by score and take top_k
-        scored_docs.sort(key=lambda x: x[1], reverse=True)
-        
-        # Add complexity score based on query complexity
-        query_complexity = min(1.0, len(query_terms) / 10)
-        self._add_edge_score(
-            f"retrieve_{query[:20]}",
-            path_distance=1.0,
-            information_content=0.5 + query_complexity
-        )
-        
-        return [doc for doc, _ in scored_docs[:top_k]]
-
-class SimpleRAG(RAG):
-    """
-    A simple RAG system that combines document retrieval with language model generation.
+        # Update complexity score
+        if self._enable_scoring:
+            self._add_edge_score(
+                f"document_connection:{document.id}",
+                path_distance=1.0,
+                information_content=0.5
+            )
+            self._complexity_score.update()
     
-    This RAG system uses a simple retriever and an agent to generate responses.
-    """
-    
-    def __init__(
-        self,
-        agent: Agent,
-        documents: List[Document],
-        enable_scoring: bool = True
-    ):
+    async def run(self, query: str) -> str:
         """
-        Initialize a SimpleRAG system.
+        Run the RAG system on the given query asynchronously.
         
         Args:
-            agent: Agent for generation
-            documents: List of documents to retrieve from
-            enable_scoring: Whether to track complexity scoring
-        """
-        # Create a simple retriever
-        retriever = SimpleRetriever(documents, enable_scoring=enable_scoring)
-        
-        # Initialize the base RAG system
-        super().__init__(retriever, agent, enable_scoring=enable_scoring)
-    
-    async def run(self, query: str, top_k: int = 3) -> str:
-        """
-        Process a query using the SimpleRAG system.
-        
-        Args:
-            query: Query string
-            top_k: Number of documents to retrieve
+            query: Query to run
             
         Returns:
             Generated response
         """
-        # Retrieve relevant documents
-        docs = await self.retriever.retrieve(query, top_k)
-        
-        # Format documents for the agent
-        context = "\n\n".join([f"Document {i+1}: {doc.content}" for i, doc in enumerate(docs)])
-        
-        # Create the prompt with the retrieved context
-        prompt = f"Context information:\n{context}\n\nQuestion: {query}\n\nAnswer:"
-        
-        # Generate a response using the agent
-        response = await self.agent.run(prompt)
-        
-        return response
-
-class ContextualRAG(RAG):
-    """
-    A RAG system that adapts to the query context.
+        # In a real implementation, this would:
+        # 1. Retrieve relevant documents based on the query
+        # 2. Generate a prompt with the documents and query
+        # 3. Call the agent with the prompt
+        # For now, we'll just return a placeholder response
+        return f"RAG response for: {query} (using {len(self.documents)} documents)"
     
-    This RAG system analyzes the query to determine the best retrieval strategy.
-    """
-    
-    def __init__(
-        self,
-        agent: Agent,
-        documents: List[Document],
-        embedding_function: Optional[Callable[[str], List[float]]] = None,
-        enable_scoring: bool = True
-    ):
+    def run_sync(self, query: str) -> str:
         """
-        Initialize a ContextualRAG system.
+        Run the RAG system on the given query synchronously.
         
         Args:
-            agent: Agent for generation
-            documents: List of documents to retrieve from
-            embedding_function: Optional function to convert text to embeddings
-            enable_scoring: Whether to track complexity scoring
-        """
-        from .rag import ContextualRetriever
-        
-        # Create a contextual retriever
-        retriever = ContextualRetriever(documents, embedding_function, enable_scoring=enable_scoring)
-        
-        # Initialize the base RAG system
-        super().__init__(retriever, agent, enable_scoring=enable_scoring)
-        
-        # Add additional complexity for contextual RAG
-        self._add_node_score("contextual_rag", inputs=2, outputs=1)
-    
-    async def run(self, query: str, top_k: int = 3) -> str:
-        """
-        Process a query using the ContextualRAG system.
-        
-        Args:
-            query: Query string
-            top_k: Number of documents to retrieve
+            query: Query to run
             
         Returns:
             Generated response
         """
-        # Retrieve relevant documents using the contextual retriever
-        docs = await self.retriever.retrieve(query, top_k)
+        # Synchronous version of run
+        import asyncio
+        return asyncio.run(self.run(query))
+
+def create_document(
+    content: str,
+    metadata: Optional[Dict[str, Any]] = None,
+    id: Optional[str] = None
+) -> Document:
+    """
+    Create a document.
+    
+    Args:
+        content: Content of the document
+        metadata: Optional metadata for the document
+        id: Optional unique identifier for the document
         
-        # Format documents for the agent
-        context = "\n\n".join([f"Document {i+1}: {doc.content}" for i, doc in enumerate(docs)])
+    Returns:
+        Document instance
+    """
+    return Document(content=content, metadata=metadata, id=id)
+
+def create_simple_rag(
+    agent: Any,
+    documents: Optional[List[Document]] = None
+) -> SimpleRAG:
+    """
+    Create a simple RAG system.
+    
+    Args:
+        agent: Agent to use for generation
+        documents: Optional list of documents
         
-        # Create the prompt with the retrieved context
-        prompt = f"Context information:\n{context}\n\nQuestion: {query}\n\nAnswer:"
-        
-        # Generate a response using the agent
-        response = await self.agent.run(prompt)
-        
-        return response
+    Returns:
+        SimpleRAG instance
+    """
+    return SimpleRAG(agent=agent, documents=documents)
