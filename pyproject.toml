@@ -8,7 +8,7 @@ include-package-data = true
 
 [project]
 name = "scoras"
-version = "0.2.3"
+version = "0.3.0"
 description = "Intelligent Agent Framework with Complexity Scoring"
 readme = "README.md"
 authors = [
