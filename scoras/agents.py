@@ -11,138 +11,70 @@ from .core import ScoringMixin, Message, Tool
 
 class Agent(ScoringMixin):
     """
-    Base Agent class that can interact with models and tools.
+    Represents an intelligent agent that can process messages and use tools.
     
-    This class provides the foundation for creating intelligent agents
-    that can use language models and tools to perform tasks.
+    An agent is a high-level abstraction that can interact with users and other agents,
+    process information, and take actions using tools.
     """
     
     def __init__(
         self,
-        model: str = "openai:gpt-4",
-        temperature: float = 0.7,
-        max_tokens: int = 1000,
-        tools: Optional[List[Tool]] = None,
+        model: Union[str, ModelConfig],
+        system_prompt: str = "You are a helpful assistant.",  # Add support for system_prompt
+        tools: Optional[List[Union[Tool, Callable]]] = None,  # Add support for tools
         enable_scoring: bool = True
     ):
         """
         Initialize an Agent.
         
         Args:
-            model: Model identifier in format "provider:model_name"
-            temperature: Temperature for model generation (0.0-1.0)
-            max_tokens: Maximum tokens to generate
+            model: Model configuration or string in the format 'provider:model_name'
+            system_prompt: System prompt to guide the agent's behavior
             tools: Optional list of tools available to the agent
             enable_scoring: Whether to track complexity scoring
         """
         super().__init__(enable_scoring=enable_scoring)
-        self.id = str(uuid.uuid4())
-        self.model = model
-        self.temperature = temperature
-        self.max_tokens = max_tokens
-        self.tools = tools or []
-        self.conversation_history = []
         
-        # Add agent complexity score
-        provider, model_name = self._parse_model_string(model)
-        self._add_node_score(f"agent:{self.id}", inputs=1, outputs=1)
+        # Set up model configuration
+        self.model_config = model if isinstance(model, ModelConfig) else ModelConfig.from_string(model)
         
-        # Add tool complexity scores
-        for tool in self.tools:
+        # Set up conversation
+        self.system_prompt = system_prompt
+        self.messages = [Message(role="system", content=system_prompt)]
+        
+        # Set up tools
+        self.tools = []
+        if tools:
+            for tool_item in tools:
+                if callable(tool_item) and hasattr(tool_item, "_tool_name"):
+                    # It's a decorated function
+                    self.tools.append(Tool(
+                        name=tool_item._tool_name,
+                        description=tool_item._tool_description,
+                        function=tool_item,
+                        complexity=tool_item._tool_complexity
+                    ))
+                elif isinstance(tool_item, Tool):
+                    # It's already a Tool instance
+                    self.tools.append(tool_item)
+                else:
+                    raise ValueError(f"Unsupported tool type: {type(tool_item)}")
+        
+        # Add complexity scores for the agent and its tools
+        self._add_node_score("agent", inputs=1, outputs=len(self.tools) if self.tools else 1)
+        
+        for tool_item in self.tools:
+            params_count = len(tool_item.parameters) if tool_item.parameters else 1
+            complexity_map = {"simple": 0.5, "standard": 1.0, "complex": 2.0}
+            execution_time = complexity_map.get(tool_item.complexity.lower(), 1.0)
+            
             self._add_tool_score(
-                f"tool:{tool.name}",
-                parameters=len(tool.parameters) if hasattr(tool, "parameters") else 1
+                tool_item.name,
+                parameters=params_count,
+                execution_time=execution_time,
+                resource_usage=0.5
             )
-    
-    def _parse_model_string(self, model_string: str) -> tuple:
-        """
-        Parse a model string in the format "provider:model_name".
-        
-        Args:
-            model_string: Model identifier string
-            
-        Returns:
-            Tuple of (provider, model_name)
-        """
-        if ":" in model_string:
-            provider, model_name = model_string.split(":", 1)
-        else:
-            provider = "openai"
-            model_name = model_string
-        
-        return provider, model_name
-    
-    def add_tool(self, tool: Tool) -> None:
-        """
-        Add a tool to the agent.
-        
-        Args:
-            tool: Tool to add
-        """
-        self.tools.append(tool)
-        
-        # Update complexity score
-        if self._enable_scoring:
-            self._add_tool_score(
-                f"tool:{tool.name}",
-                parameters=len(tool.parameters) if hasattr(tool, "parameters") else 1
-            )
-    
-    def add_message(self, role: str, content: str, metadata: Optional[Dict[str, Any]] = None) -> None:
-        """
-        Add a message to the conversation history.
-        
-        Args:
-            role: Role of the message sender (e.g., "user", "assistant", "system")
-            content: Content of the message
-            metadata: Optional metadata for the message
-        """
-        message = Message(role=role, content=content, metadata=metadata or {})
-        self.conversation_history.append(message)
-    
-    async def run(self, input_text: str) -> str:
-        """
-        Run the agent on the given input text asynchronously.
-        
-        Args:
-            input_text: Input text to process
-            
-        Returns:
-            Agent's response
-        """
-        # Add user message to conversation history
-        self.add_message("user", input_text)
-        
-        # In a real implementation, this would call the model API
-        # For now, we'll just return a placeholder response
-        response = f"This is a placeholder response from {self.model} (async)"
-        
-        # Add assistant message to conversation history
-        self.add_message("assistant", response)
-        
-        return response
-    
-    def run_sync(self, input_text: str) -> str:
-        """
-        Run the agent on the given input text synchronously.
-        
-        Args:
-            input_text: Input text to process
-            
-        Returns:
-            Agent's response
-        """
-        # Add user message to conversation history
-        self.add_message("user", input_text)
-        
-        # In a real implementation, this would call the model API
-        # For now, we'll just return a placeholder response
-        response = f"This is a placeholder response from {self.model} (sync)"
-        
-        # Add assistant message to conversation history
-        self.add_message("assistant", response)
-        
-        return response
+
 
 class ExpertAgent(Agent):
     """

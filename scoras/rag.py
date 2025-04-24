@@ -10,31 +10,18 @@ from typing import List, Dict, Any, Optional, Union, Callable
 
 from .core import ScoringMixin
 
-class Document:
-    """
-    Represents a document in a RAG system.
+class Document(BaseModel):
+    """Model representing a document for retrieval."""
     
-    A document is a piece of content that can be retrieved and used to augment
-    the generation process.
-    """
+    content: str = Field(..., description="Content of the document")
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="Metadata associated with the document")
+    embedding: Optional[List[float]] = Field(None, description="Vector embedding of the document")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), description="Unique identifier for the document")
     
-    def __init__(
-        self,
-        content: str,
-        metadata: Optional[Dict[str, Any]] = None,
-        id: Optional[str] = None
-    ):
-        """
-        Initialize a document.
-        
-        Args:
-            content: Content of the document
-            metadata: Optional metadata for the document
-            id: Optional unique identifier for the document
-        """
-        self.content = content
-        self.metadata = metadata or {}
-        self.id = id or str(uuid.uuid4())  # Generate a random ID if not provided
+    def __str__(self) -> str:
+        """String representation of the document."""
+        return self.content[:100] + "..." if len(self.content) > 100 else self.content
+
     
     def __str__(self) -> str:
         """

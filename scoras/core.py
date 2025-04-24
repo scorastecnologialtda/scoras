@@ -183,7 +183,7 @@ class Node(ScoringMixin):
     def __init__(
         self,
         name: str,
-        function: Callable,
+        function: Optional[Callable] = None,  # Make function optional
         complexity: str = "standard",
         enable_scoring: bool = True
     ):
@@ -192,13 +192,13 @@ class Node(ScoringMixin):
         
         Args:
             name: Name of the node
-            function: Function to execute when the node is called
+            function: Function to execute when the node is called (optional in 0.3.3 for backward compatibility)
             complexity: Complexity level ("simple", "standard", "complex")
             enable_scoring: Whether to track complexity scoring
         """
         super().__init__(enable_scoring=enable_scoring)
         self.name = name
-        self.function = function
+        self.function = function or (lambda x: x)  # Default to identity function if None
         self.complexity = complexity
         self.inputs = []
         self.outputs = []
@@ -207,34 +207,6 @@ class Node(ScoringMixin):
         complexity_map = {"simple": 1.0, "standard": 1.2, "complex": 1.5}
         complexity_value = complexity_map.get(complexity.lower(), 1.2)
         self._add_node_score(name, inputs=1, outputs=1, max_factor=10)
-    
-    async def execute(self, *args, **kwargs) -> Any:
-        """
-        Execute the node's function asynchronously.
-        
-        Args:
-            *args: Positional arguments to pass to the function
-            **kwargs: Keyword arguments to pass to the function
-            
-        Returns:
-            Result of the function execution
-        """
-        return await self.function(*args, **kwargs)
-    
-    def execute_sync(self, *args, **kwargs) -> Any:
-        """
-        Execute the node's function synchronously.
-        
-        Args:
-            *args: Positional arguments to pass to the function
-            **kwargs: Keyword arguments to pass to the function
-            
-        Returns:
-            Result of the function execution
-        """
-        if hasattr(self.function, "__call__"):
-            return self.function(*args, **kwargs)
-        return None
 
 class Edge(ScoringMixin):
     """
